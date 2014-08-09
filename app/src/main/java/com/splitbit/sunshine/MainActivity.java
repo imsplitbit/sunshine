@@ -13,6 +13,22 @@ import android.view.MenuItem;
 
 public class MainActivity extends ActionBarActivity {
 
+    /*
+    Application Lifecycle  NOTES!!!!!!!
+
+    order an app follows when it's rotated.
+
+    onPause
+    onStop
+    onDestroy
+    onCreate
+    onStart
+    onResume
+
+    onSaveInstanceState is called right before onPause
+    onRestoreInstanceState is called right after onCreate if the app was terminated by the system
+     */
+
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Override
@@ -25,7 +41,6 @@ public class MainActivity extends ActionBarActivity {
                     .commit();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

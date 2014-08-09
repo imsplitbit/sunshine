@@ -43,6 +43,9 @@ public class ForecastFragment extends Fragment {
     // main thread.
     private ArrayAdapter<String> mForecastAdapter;
 
+    // Make a log tag for app logger
+    private static final String LOG_TAG = ForecastFragment.class.getSimpleName();
+
     public ForecastFragment() {
     }
 
@@ -63,6 +66,7 @@ public class ForecastFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "Entered onCreate");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
