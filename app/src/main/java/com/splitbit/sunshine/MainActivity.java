@@ -1,24 +1,19 @@
 package com.splitbit.sunshine;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +21,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+                    .add(R.id.container, new ForecastFragment())
                     .commit();
         }
     }
@@ -46,55 +41,39 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            // The settings option was clicked.  Render the SettingsActivity by issuing an
+            // explicit intent.
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }
+        if (id == R.id.action_map) {
+            // The show map of location action has been selected.  DO IT!
+            openPreferredLocationInMap();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
+    private void openPreferredLocationInMap() {
+        // Get the shared preferences and read the location key if that isn't present then use the
+        // default location.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String location = prefs.getString(
+                getString(R.string.pref_location_key), getString(R.string.pref_location_default));
 
-        public PlaceholderFragment() {
-        }
+        // Create a geo location uri from our zip code
+        Uri geoLocation = Uri.parse("geo:0,0?").buildUpon()
+                .appendQueryParameter("q", location).build();
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        // Create an Intent to open the common task of geo
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(geoLocation);
 
-            String[] forecastArray = {
-                    "Today - Sunny - 88/63",
-                    "Tomorrow - DEATH - 10000/-203843",
-                    "Wednesday - Foggy - 63/40",
-                    "Thursday - Sunny - 90/84",
-                    "Friday - Sunny - 93/84",
-                    "Saturday - Rainy - 75/64",
-                    "Sunday - Foggy - 62/58"
-            };
-
-            List<String> weekForecast = new ArrayList<String>(
-                    Arrays.asList(forecastArray)
-            );
-
-            ArrayAdapter<String> mForecastAdapter = new ArrayAdapter<String>(
-                    // Context
-                    getActivity(),
-                    // ID of list item layout
-                    R.layout.list_item_forecast,
-                    // ID of text view
-                    R.id.list_item_forecast_textview,
-                    // list of data
-                    weekForecast
-            );
-
-            // This is how you find a view from the expanded rootView
-            ListView listForecastView = (ListView) rootView.findViewById(R.id.listview_forecast);
-            // This is how you bind the adapter to the View
-            listForecastView.setAdapter(mForecastAdapter);
-
-            return rootView;
+        // Start an activity for this intent
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Log.d(LOG_TAG, "Couldn't call " + location + ", no data found");
         }
     }
 }
