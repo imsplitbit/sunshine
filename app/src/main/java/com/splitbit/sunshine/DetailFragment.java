@@ -1,9 +1,5 @@
 package com.splitbit.sunshine;
 
-/**
- * Created by imsplitbit on 7/19/14.
- */
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

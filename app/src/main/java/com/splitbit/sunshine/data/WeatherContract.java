@@ -54,4 +54,19 @@ public class WeatherContract {
         // Degrees are meteorological degrees (e.g, 0 is north, 180 is south).  Stored as floats.
         public static final String COLUMN_DEGREES = "degrees";
     }
+
+    public static final class LocationEntry implements BaseColumns {
+        public static final String TABLE_NAME = "location";
+
+        // Location Postal Code in the format for openweathermap api
+        public static final String COLUMN_LOCATION_SETTING = "location_setting";
+
+        // City Name.  Human readable name, better than 78260
+        public static final String COLUMN_CITY_NAME = "city_name";
+
+        // In order to map the location when we launch a map intent we need the
+        // latitude and longitude.
+        public static final String COLUMN_COORD_LAT = "coord_lat";
+        public static final String COLUMN_COORD_LONG = "coord_long";
+    }
 }
